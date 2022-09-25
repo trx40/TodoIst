@@ -10,17 +10,19 @@
                             <%= todo.text %>
                         </span>
                         <div class="d-grid gap-2 d-flex justify-content-end">
-                            <button href="/todos/<%=todo._id%>/edit" class="btn btn-sm btn-warning me-md-2">Edit</a>
-                                <form style="display: inline" method="POST"
-                                    action="/todos/<%=todo._id%>?_method=DELETE">
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
+                            <form style="display: inline" method="GET" action="/todos/<%=todo._id%>/edit">
+                                <button type="submit" class="btn btn-sm btn-warning me-md-2">Edit</button>
+                            </form>
+
+                            <form style="display: inline" method="POST" action="/todos/<%=todo._id%>?_method=DELETE">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
                         </div>
                         <div class="clearfix"></div>
                     </li>
                     <% }); %>
             </ul>
-            <button href="/todos/new" class="btn btn-primary ">New Item</a>
+            <a href="/todos/new" class="btn btn-primary ">New Item</a>
         </div>
     </div>
 
