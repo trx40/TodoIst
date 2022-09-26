@@ -57,15 +57,19 @@ app.get('/todos/new', (req, res) => {
 
 // NEW TODO QUERY
 app.post('/todos', async (req, res) => {
-    const newTodo = new Todo(req.body.todo)
-    await newTodo.save()
-        .then(todo => {
-            res.redirect('/todos')
-        })
-        .catch(err => {
+    const newData = req.body.todo
+    await Todo.create(newData, function (err, newTodo) {
+        if (err) {
+            console.log("Error while creating new TODO")
             console.log(err)
-        })
-
+        }
+        else {
+            if (req.xhr) {
+                res.json(newTodo)
+            }
+            else res.redirect('/todos')
+        }
+    })
 })
 
 // EDIT FORM
