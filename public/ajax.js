@@ -1,2 +1,3 @@
-
-alert("this works!");
+$.get('/todos', function (data) {
+    debugger
+})

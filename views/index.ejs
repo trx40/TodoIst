@@ -1,11 +1,11 @@
-<%- include('partials/header.ejs'); -%>
+<%- include('partials/header.ejs') %>
 
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <h1>To Do Items</h1>
             <ul class="list-group">
                 <% todos.forEach( function(todo) { %>
-                    <li class="list-group-item">
+                    <li class="list-group-item list-group-item-light">
                         <span class="lead">
                             <%= todo.text %>
                         </span>
@@ -22,7 +22,9 @@
                     </li>
                     <% }); %>
             </ul>
-            <a href="/todos/new" class="btn btn-primary ">New Item</a>
+            <form action="/todos/new" method="get">
+                <button type="button" class="btn btn-primary mt-3">New Item</button>
+            </form>
         </div>
     </div>
 

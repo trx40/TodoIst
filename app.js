@@ -32,8 +32,20 @@ app.get('/', (req, res) => {
 
 // INDEX
 app.get('/todos', async (req, res) => {
-    const todos = await Todo.find({})
-    res.render('index', { todos })
+    await Todo.find({})
+        .then(todos => {
+            if (req.xhr) {
+                res.json(todos)
+            }
+            else {
+                res.render('index', { todos })
+            }
+
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
 })
 
 
@@ -46,15 +58,26 @@ app.get('/todos/new', (req, res) => {
 // NEW TODO QUERY
 app.post('/todos', async (req, res) => {
     const newTodo = new Todo(req.body.todo)
-    await newTodo.save();
-    res.redirect('/todos')
+    await newTodo.save()
+        .then(todo => {
+            res.redirect('/todos')
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
 })
 
 // EDIT FORM
 app.get('/todos/:id/edit', async (req, res) => {
     const { id } = req.params
     const todo = await Todo.findById(id)
-    res.render('edit', { todo })
+        .then(todo => {
+            res.render('edit', { todo })
+        })
+        .catch(err => {
+            console.log(err)
+        })
 })
 
 
