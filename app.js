@@ -58,7 +58,7 @@ app.get('/todos/new', (req, res) => {
 // NEW TODO QUERY
 app.post('/todos', async (req, res) => {
     const newData = req.body.todo
-    await Todo.create(newData, function (err, newTodo) {
+    await Todo.create(newData, (err, newTodo) => {
         if (err) {
             console.log("Error while creating new TODO")
             console.log(err)
@@ -91,9 +91,13 @@ app.put('/todos/:id', async (req, res) => {
     const { todo } = req.body
     await Todo.findByIdAndUpdate(id, todo, { runValidators: true, new: true })
         .then(todo => {
-            res.redirect('/todos')
+            if (req.xhr) {
+                res.json(todo)
+            }
+            else res.redirect('/todos')
         })
         .catch(err => {
+            console.log("Error while Editing TODO")
             console.log(err)
         })
 })
@@ -103,9 +107,13 @@ app.delete('/todos/:id', async (req, res) => {
     const { id } = req.params
     await Todo.findByIdAndDelete(id)
         .then(todo => {
-            res.redirect('/todos')
+            if (req.xhr) {
+                res.json(todo)
+            }
+            else res.redirect('/todos')
         })
         .catch(err => {
+            console.log("Error while Deleting TODO")
             console.log(err)
         })
 
