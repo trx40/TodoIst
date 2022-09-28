@@ -64,10 +64,7 @@ app.post('/todos', async (req, res) => {
             console.log(err)
         }
         else {
-            if (req.xhr) {
-                res.json(newTodo)
-            }
-            else res.redirect('/todos')
+            res.json(newTodo)
         }
     })
 })
