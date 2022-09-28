@@ -1,3 +1,7 @@
 body {
     background: paleturquoise
 }
+
+#editItem-form {
+    display: none;
+}
