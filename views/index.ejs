@@ -6,10 +6,10 @@
             <div class="col-md-6">
 
                 <h1>New Item</h1>
-                <form action="/todos" method="POST" id="newItem">
+                <form action="/todos" method="POST" id="newItem-form">
                     <div class="form-group">
-                        <label>Item Text</label>
-                        <input type="text" name="todo[text]" class="form-control">
+                        <label for="item-text">Item Text</label>
+                        <input type="text" name="todo[text]" class="form-control" id="item-text">
                     </div>
                     <button class="btn btn-primary mt-3">Create Item</button>
                 </form>
@@ -19,10 +19,11 @@
                     <% todos.forEach( function(todo) { %>
                         <li class="list-group-item">
                             <!-- EDIT FORM -->
-                            <form action="/todos/<%=todo._id%>" method="POST" id="editItem-form" class="">
+                            <form action="/todos/<%=todo._id%>" method="POST" id="editItem-form">
                                 <div class="form-group">
-                                    <label>Item Text</label>
-                                    <input type="text" value="<%=todo.text%>" name="todo[text]" class="form-control">
+                                    <label for="<%=todo._id%>">Item Text</label>
+                                    <input type="text" value="<%=todo.text%>" name="todo[text]" class="form-control"
+                                        id="<%=todo._id%>">
                                 </div>
                                 <button class="btn btn-primary mt-3">Update Item</button>
                             </form>
@@ -30,7 +31,7 @@
                             <span class="flex-grow-1 lead">
                                 <%= todo.text %>
                             </span>
-                            <div class="gap-2 d-flex justifiy-content-end">
+                            <div class="gap-2 d-flex justifiy-content-end" id="btnGroup">
 
                                 <button id="editItem-button" class="btn btn-md btn-warning">Edit</button>
 
