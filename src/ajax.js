@@ -12,7 +12,7 @@ $('#newItem-form').submit(function (event) {
             data: formData,
             type: 'POST',
             success: function (data) {
-                $('#todo-list').append(                                                                                         // APPENDING THE NEW LIST ITEM TO THE UL=> TODO LIST
+                $('#todo-list').append(           // APPENDING THE NEW LIST ITEM TO THE UL=> TODO LIST
                     `
                      <li class="list-group-item">
                             <!-- EDIT FORM -->
@@ -56,7 +56,7 @@ $('#todo-list').on('submit', '#editItem-form', function (event) {
     event.preventDefault()
     let toDoItem = $(this).serialize()
     let actionUrl = $(this).attr('action')
-    let $originalItem = $(this).parent('.list-group-item')                                                               // CAPTURING ORIGINAL ITEM SO IT CAN BE EDITED LATER
+    let $originalItem = $(this).parent('.list-group-item')     // CAPTURING ORIGINAL ITEM SO IT CAN BE EDITED LATER
 
     $.ajax({
         url: actionUrl,
@@ -64,7 +64,7 @@ $('#todo-list').on('submit', '#editItem-form', function (event) {
         type: 'PUT',
         originalItem: $originalItem,
         success: function (data) {
-            this.originalItem.html(                                                                                      // REPLACE THE ENTIRE ORIGINAL LIST GROUP ELEMENT AFTER EDITING
+            this.originalItem.html(               // REPLACE THE ENTIRE ORIGINAL LIST GROUP ELEMENT AFTER EDITING
                 `
                 <!-- EDIT FORM -->                                                                                     
                 <form action="/todos/${data._id}" method="POST" id="editItem-form">
@@ -108,7 +108,7 @@ $('#todo-list').on('submit', '#delItem-form', function (event) {
             type: 'DELETE',
             itemToDelete: $itemToDelete,
             success: function (data) {
-                this.itemToDelete.remove()                                          // REMOVES THE LIST ELEMENT FROM THE DOM
+                this.itemToDelete.remove()        // REMOVES THE LIST ELEMENT FROM THE DOM
             }
         })
     }
