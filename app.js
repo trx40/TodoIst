@@ -58,15 +58,15 @@ app.get('/todos/new', (req, res) => {
 // NEW TODO QUERY
 app.post('/todos', async (req, res) => {
     const newData = req.body.todo
-    await Todo.create(newData, (err, newTodo) => {
-        if (err) {
+    await Todo.create(newData)
+        .then(todo => {
+            res.json(todo)
+        })
+        .catch(err => {
             console.log("Error while creating new TODO")
             console.log(err)
-        }
-        else {
-            res.json(newTodo)
-        }
-    })
+        })
+
 })
 
 // EDIT FORM
@@ -88,10 +88,7 @@ app.put('/todos/:id', async (req, res) => {
     const { todo } = req.body
     await Todo.findByIdAndUpdate(id, todo, { runValidators: true, new: true })
         .then(todo => {
-            if (req.xhr) {
-                res.json(todo)
-            }
-            else res.redirect('/todos')
+            res.json(todo)
         })
         .catch(err => {
             console.log("Error while Editing TODO")
@@ -104,10 +101,7 @@ app.delete('/todos/:id', async (req, res) => {
     const { id } = req.params
     await Todo.findByIdAndDelete(id)
         .then(todo => {
-            if (req.xhr) {
-                res.json(todo)
-            }
-            else res.redirect('/todos')
+            res.json(todo)
         })
         .catch(err => {
             console.log("Error while Deleting TODO")
