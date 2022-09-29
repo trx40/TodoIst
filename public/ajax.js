@@ -1,68 +1,116 @@
-// $.get('/todos', function (data) {
-//     console.log(data)
-// });
-// ------------------------------------------- FORM for adding NEW ITEM------------------------------------------
+
+// ---------------------------------------------------------------------------------------------- 
+//                          ADDING NEW TODOS FROM NEW ITEM FORM AT INDEX
+// ---------------------------------------------------------------------------------------------- 
 $('#newItem-form').submit(function (event) {
     event.preventDefault();
     let formData = $(this).serialize();
-    if (formData) {
-        $.post('/todos', formData, function (data) {
-            $('#todo-list').append(
-                `
-                <li class="list-group-item list-group-item-light d-flex align-items-center">
-                            <span data-="TODO" class="flex-grow-1 lead">
+    let actionUrl = $(this).attr('action')
+    if (formData !== "") {
+        $.ajax({
+            url: actionUrl,
+            data: formData,
+            type: 'POST',
+            success: function (data) {
+                $('#todo-list').append(                                                                                         // APPENDING THE NEW LIST ITEM TO THE UL=> TODO LIST
+                    `
+                     <li class="list-group-item">
+                            <!-- EDIT FORM -->
+                            <form action="/todos/${data._id}" method="POST" id="editItem-form">
+                                <div class="${data._id}">
+                                    <label for="item-text">Item Text</label>
+                                    <input type="text" value="${data.text}" name="todo[text]" class="form-control" id="${data._id}">
+                                </div>
+                                <button class="btn btn-primary mt-3">Update Item</button>
+                            </form>
+                            <!--  -->
+                            <span class="flex-grow-1 lead">
                                 ${data.text}
                             </span>
-                            <div class="gap-2 d-flex align-items-center">
+                            <div class="gap-2 d-flex justifiy-content-end" id="btnGroup">
 
-                                <form action="/todos/${data._id}/edit" method="GET">
-                                    <button type="submit" class="btn btn-md btn-block btn-warning">Edit</button>
-                                </form>
-
+                                <button id="editItem-button" class="btn btn-md btn-warning">Edit</button>
 
                                 <form action="/todos/${data._id}" method="POST" id="delItem-form">
-                                    <button type="submit" class="btn btn-md btn-block btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-md btn-danger">Delete</button>
                                 </form>
 
                             </div>
-                        </li>
+                    </li>
                 
                 `
-            )
-            $('#newItem-form').find('.form-control').val('')
-        });
-
+                )
+                $('#newItem-form').find('.form-control').val('')
+            }
+        })
     }
 });
-
+// ---------------------------------------------------------------------------------------------- 
+//                          TOGGLE VISIBILITY OF EDIT FORM ON CLICK OF EDIT BUTTON
+// ---------------------------------------------------------------------------------------------- 
 $('#todo-list').on('click', '#editItem-button', function () {
     $(this).parent().siblings('#editItem-form').toggle();
 })
 
-// $('#editItem-form').submit(function (event) {
-//     event.preventDefault();
-//     let formData = $(this).serialize();
-//     let formAction = $(this).attr('action');
-//     if (formData) {
-//         $.ajax({
-//             url: formAction,
-//             data: formData,
-//             type: 'PUT',
-//             success: function (data) {
-//                 console.log(data)
-//             }
-//         })
-//     }
-// });
+$('#todo-list').on('submit', '#editItem-form', function (event) {
+    event.preventDefault()
+    let toDoItem = $(this).serialize()
+    let actionUrl = $(this).attr('action')
+    let $originalItem = $(this).parent('.list-group-item')                                                               // CAPTURING ORIGINAL ITEM SO IT CAN BE EDITED LATER
 
-// $('#delItem-form').submit(function (event) {
-//     event.preventDefault();
-//     let formAction = $(this).attr('action');
-//     $.ajax({
-//         url: formAction,
-//         type: 'DELETE',
-//         success: function (data) {
-//             console.log(data)
-//         }
-//     })
-// });
+    $.ajax({
+        url: actionUrl,
+        data: toDoItem,
+        type: 'PUT',
+        originalItem: $originalItem,
+        success: function (data) {
+            this.originalItem.html(                                                                                      // REPLACE THE ENTIRE ORIGINAL LIST GROUP ELEMENT AFTER EDITING
+                `
+                <!-- EDIT FORM -->                                                                                     
+                <form action="/todos/${data._id}" method="POST" id="editItem-form">
+                    <div class="form-group">
+                        <label for="${data._id}">Item Text</label>
+                        <input type="text" value="${data.text}" name="todo[text]" class="form-control" id="${data._id}">
+                    </div>
+                    <button class="btn btn-primary mt-3">Update Item</button>
+                </form>
+                <!--  -->
+                <span class="flex-grow-1 lead">
+                     ${data.text} 
+                </span>
+                 <div class="gap-2 d-flex justifiy-content-end">
+
+                    <button id="editItem-button" class="btn btn-md btn-warning">Edit</button>
+
+                        <form action="/todos/${data._id}" method="POST" id="delItem-form">
+                            <button type="submit" class="btn btn-md btn-danger">Delete</button>
+                        </form>
+
+                </div>
+
+                `
+            )
+        }
+    })
+})
+
+// ---------------------------------------------------------------------------------------------- 
+//                          DELETING TODO FROM INDEX
+// ---------------------------------------------------------------------------------------------- 
+$('#todo-list').on('submit', '#delItem-form', function (event) {
+    event.preventDefault();
+    let confirmResponse = confirm('Are you sure?')
+    if (confirmResponse) {
+        let actionUrl = $(this).attr('action')
+        let $itemToDelete = $(this).parent('#btnGroup').parent('.list-group-item') // TRAVERSE DOM TO LOCATE THE LIST ELEMENT
+        $.ajax({
+            url: actionUrl,
+            type: 'DELETE',
+            itemToDelete: $itemToDelete,
+            success: function (data) {
+                this.itemToDelete.remove()                                          // REMOVES THE LIST ELEMENT FROM THE DOM
+            }
+        })
+    }
+})
+
