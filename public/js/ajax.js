@@ -64,3 +64,16 @@ $('#todo-list').on('submit', '#delItem-form', function (event) {
         });
     }
 });
+// ---------------------------------------------------------------------------------------------- 
+//                          SEARCH FUNCTIONALITY
+// ---------------------------------------------------------------------------------------------- 
+$('#search').on('input', function (event) {
+    event.preventDefault();
+
+    $.get('/todos?keyword=' + encodeURIComponent(event.target.value), function (data) {
+        $('#todo-list').html('');
+        data.forEach(function (todo) {
+            $('#todo-list').append('\n                <li class="list-group-item">\n                            <!-- EDIT FORM -->\n                            <form action="/todos/' + todo._id + '" method="POST" id="editItem-form">\n                                <div class="' + todo._id + '">\n                                    <label for="item-text">Item Text</label>\n                                    <input type="text" value="' + todo.text + '" name="todo[text]" class="form-control" id="' + todo._id + '">\n                                </div>\n                                <button class="btn btn-primary mt-3">Update Item</button>\n                            </form>\n                            <!--  -->\n                            <span class="flex-grow-1 lead">\n                                ' + todo.text + '\n                            </span>\n                            <div class="gap-2 d-flex justifiy-content-end" id="btnGroup">\n\n                                <button id="editItem-button" class="btn btn-md btn-warning">Edit</button>\n\n                                <form action="/todos/' + todo._id + '" method="POST" id="delItem-form">\n                                    <button type="submit" class="btn btn-md btn-danger">Delete</button>\n                                </form>\n\n                            </div>\n                    </li>\n                ');
+        });
+    });
+});

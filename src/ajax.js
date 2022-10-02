@@ -113,4 +113,42 @@ $('#todo-list').on('submit', '#delItem-form', function (event) {
         })
     }
 })
+// ---------------------------------------------------------------------------------------------- 
+//                          SEARCH FUNCTIONALITY
+// ---------------------------------------------------------------------------------------------- 
+$('#search').on('input', function (event) {
+    event.preventDefault()
 
+    $.get(`/todos?keyword=${encodeURIComponent(event.target.value)}`, function (data) {
+        $('#todo-list').html('')
+        data.forEach(function (todo) {
+            $('#todo-list').append(
+                `
+                <li class="list-group-item">
+                            <!-- EDIT FORM -->
+                            <form action="/todos/${todo._id}" method="POST" id="editItem-form">
+                                <div class="${todo._id}">
+                                    <label for="item-text">Item Text</label>
+                                    <input type="text" value="${todo.text}" name="todo[text]" class="form-control" id="${todo._id}">
+                                </div>
+                                <button class="btn btn-primary mt-3">Update Item</button>
+                            </form>
+                            <!--  -->
+                            <span class="flex-grow-1 lead">
+                                ${todo.text}
+                            </span>
+                            <div class="gap-2 d-flex justifiy-content-end" id="btnGroup">
+
+                                <button id="editItem-button" class="btn btn-md btn-warning">Edit</button>
+
+                                <form action="/todos/${todo._id}" method="POST" id="delItem-form">
+                                    <button type="submit" class="btn btn-md btn-danger">Delete</button>
+                                </form>
+
+                            </div>
+                    </li>
+                `
+            )
+        })
+    })
+})

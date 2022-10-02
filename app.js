@@ -29,23 +29,42 @@ app.get('/', (req, res) => {
     res.redirect('/todos');
 })
 
-
+// this allows us to escape any special characters with a backslash
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
 // INDEX
 app.get('/todos', async (req, res) => {
-    await Todo.find({})
-        .then(todos => {
-            if (req.xhr) {
-                res.json(todos)
-            }
-            else {
-                res.render('index', { todos })
-            }
+    if (req.query.keyword) {   // if there's a query string called keyword then..
+        // set the constant (variable) regex equal to a new regular expression created from the keyword 
+        // that we pulled from the query string
+        const regex = new RegExp(escapeRegex(req.query.keyword), 'gi');
+        // query the database for Todos with text property that match the regular expression version of the search keyword
+        await Todo.find({ text: regex })
+            .then(todos => {
+                res.json(todos);
+            })
+            .catch(err => {
+                console.log("ERROR WHILE QUERYING VIA SEARCH BOX")
+                console.log(err);
+            })
 
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    }
+    else {
+        await Todo.find({})
+            .then(todos => {
+                if (req.xhr) {
+                    res.json(todos)
+                }
+                else {
+                    res.render('index', { todos })
+                }
 
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
 })
 
 
