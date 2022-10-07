@@ -1,31 +1,55 @@
 <%- include('partials/header.ejs') %>
 
-    <div class="row">
-        <div class="col-md-6 col-md-offset-5">
-            <h1>To Do Items</h1>
-            <ul class="list-group">
-                <% todos.forEach( function(todo) { %>
-                    <li class="list-group-item list-group-item-light d-flex align-items-center">
-                        <span data-="TODO" class="flex-grow-1 lead display-6">
-                            <%= todo.text %>
-                        </span>
-                        <div class="d-inline-flex gap-2">
-                            <form action="/todos/<%=todo._id%>/edit" method="GET">
-                                <button type="submit" class="btn btn-md btn-warning">Edit</button>
-                            </form>
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-md-6">
 
-                            <form action="/todos/<%=todo._id%>" method="POST" id="delItem">
-                                <button type="submit" class="btn btn-md btn-danger">Delete</button>
+                <h1>New Item</h1>
+                <form action="/todos" method="POST" id="newItem-form">
+                    <div class="form-group">
+                        <label for="item-text">Item Text</label>
+                        <input type="text" name="todo[text]" class="form-control" id="item-text">
+                    </div>
+                    <button class="btn btn-primary mt-3">Create Item</button>
+                </form>
+
+                <h1>To Do Items</h1>
+                <ul class="list-group" id="todo-list">
+                    <% todos.forEach( function(todo) { %>
+                        <li class="list-group-item">
+                            <!-- EDIT FORM -->
+                            <form action="/todos/<%=todo._id%>" method="POST" id="editItem-form">
+                                <div class="form-group">
+                                    <label for="<%=todo._id%>">Item Text</label>
+                                    <input type="text" value="<%=todo.text%>" name="todo[text]" class="form-control"
+                                        id="<%=todo._id%>">
+                                </div>
+                                <button class="btn btn-primary mt-3">Update Item</button>
                             </form>
-                        </div>
-                        <div class="clearfix"></div>
-                    </li>
-                    <% }); %>
-            </ul>
-            <form action="/todos/new" method="GET">
+                            <!--  -->
+                            <span class="flex-grow-1 lead">
+                                <%= todo.text %>
+                            </span>
+                            <div class="gap-2 d-flex justifiy-content-end" id="btnGroup">
+
+                                <button id="editItem-button" class="btn btn-md btn-warning">Edit</button>
+
+                                <form action="/todos/<%=todo._id%>" method="POST" id="delItem-form">
+                                    <button type="submit" class="btn btn-md btn-danger">Delete</button>
+                                </form>
+
+                            </div>
+                        </li>
+                        <% }); %>
+                </ul>
+                <!-- <form action="/todos/new" method="GET">
                 <button type="submit" class="btn btn-primary mt-3">New Item</button>
-            </form>
+            </form> -->
+            </div>
+            <div class="col"></div>
         </div>
     </div>
+    <!-- /.container -->
 
     <%- include('partials/footer.ejs') %>
